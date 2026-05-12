@@ -1,6 +1,6 @@
-import os
+import re
+import streamlit as st
 
-from dotenv import load_dotenv
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 from langchain_aws import ChatBedrockConverse
@@ -8,13 +8,11 @@ from langchain_aws.embeddings import BedrockEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from pinecone import Pinecone
 
-load_dotenv()
-
-AWS_REGION = os.getenv("AWS_REGION")
-BEDROCK_MODEL_ID = os.getenv("BEDROCK_MODEL_ID")
-EMBEDDING_MODEL_ID = os.getenv("EMBEDDING_MODEL_ID")
-PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME")
+AWS_REGION = st.secrets["AWS_REGION"]
+BEDROCK_MODEL_ID = st.secrets["BEDROCK_MODEL_ID"]
+EMBEDDING_MODEL_ID = st.secrets["EMBEDDING_MODEL_ID"]
+PINECONE_API_KEY = st.secrets["PINECONE_API_KEY"]
+PINECONE_INDEX_NAME = st.secrets["PINECONE_INDEX_NAME"]
 
 llm = ChatBedrockConverse(
     model=BEDROCK_MODEL_ID,
