@@ -3,7 +3,6 @@ import os
 import json
 import boto3
 import pandas as pd
-
 from dotenv import load_dotenv
 from pinecone import Pinecone, ServerlessSpec
 
@@ -12,9 +11,11 @@ load_dotenv()
 AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_REGION = os.getenv("AWS_REGION")
+
 BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 DATA_FILE_KEY = os.getenv("DATA_FILE_KEY")
 COLUMN_DEF_KEY = os.getenv("COLUMN_DEF_KEY")
+
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 PINECONE_INDEX = os.getenv("PINECONE_INDEX")
 
@@ -32,7 +33,7 @@ s3 = boto3.client(
     region_name=AWS_REGION
 )
 
-print("Reading VINPIPE.csv from S3...")
+print("Reading Data File from S3...")
 
 csv_obj = s3.get_object(
     Bucket=BUCKET_NAME,
@@ -42,20 +43,16 @@ csv_obj = s3.get_object(
 data_df = pd.read_csv(
     io.BytesIO(csv_obj["Body"].read())
 )
-
 print(f"Loaded Data Rows: {len(data_df)}")
 
 print("Reading column_definitions.xlsx from S3...")
-
 excel_obj = s3.get_object(
     Bucket=BUCKET_NAME,
     Key=COLUMN_DEF_KEY
 )
-
 column_df = pd.read_excel(
     io.BytesIO(excel_obj["Body"].read())
 )
-
 print(f"Loaded Column Definitions: {len(column_df)}")
 
 pc = Pinecone(
@@ -84,7 +81,7 @@ if PINECONE_INDEX not in existing_indexes:
 print("Pinecone index ready.")
 
 index = pc.Index(PINECONE_INDEX)
-
+#Embedding Function
 def get_embedding(text):
 
     response = bedrock.invoke_model(
@@ -204,8 +201,9 @@ query_embedding = get_embedding(query)
 results = index.query(
     namespace="schema",
     vector=query_embedding,
-    top_k=5,
+    top_k=3,
     include_metadata=True
+    
 )
 
 print("\nTop Results:\n")
