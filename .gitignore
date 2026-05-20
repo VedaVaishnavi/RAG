@@ -1,14 +1,5 @@
-<<<<<<< HEAD
-.env
-test.env/
-__pycache__/
-*.pyc
-.pytest_cache/
-.venv/
-venv/
-=======
 __pycache__/
 *.pyc
 .env
 nissan.env/
->>>>>>> 8ca219e (Schema Defination)
+.streamlit/
