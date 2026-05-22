@@ -194,24 +194,24 @@ if batch_vectors:
 
 print("All data indexed successfully.")
 
-query = "vehicle identifier"
+# query = "vehicle identifier"
 
-query_embedding = get_embedding(query)
+# query_embedding = get_embedding(query)
 
-results = index.query(
-    namespace="schema",
-    vector=query_embedding,
-    top_k=3,
-    include_metadata=True
+# results = index.query(
+#     namespace="schema",
+#     vector=query_embedding,
+#     top_k=3,
+#     include_metadata=True
     
-)
+# )
 
-print("\nTop Results:\n")
+# print("\nTop Results:\n")
 
-for match in results["matches"]:
+# for match in results["matches"]:
 
-    print("=" * 50)
+#     print("=" * 50)
 
-    print("Score:", match["score"])
+#     print("Score:", match["score"])
 
-    print(match["metadata"]["text"])
+#     print(match["metadata"]["text"])

@@ -1,5 +1,5 @@
 import streamlit as st
-from agent import get_agent_response
+from agent import get_agent_response_stream  # 👈 Imports your streaming generator
 
 # ==========================================
 # PAGE CONFIG
@@ -40,6 +40,7 @@ st.markdown("""
     margin-bottom: 10px;
     color: black;
     font-size: 16px;
+    white-space: pre-wrap; /* 👈 Ensures markdown newlines don't break */
 }
 
 /* Assistant message */
@@ -50,6 +51,7 @@ st.markdown("""
     margin-bottom: 10px;
     color: black;
     font-size: 16px;
+    white-space: pre-wrap; /* 👈 Crucial to render VIN details on separate lines */
 }
 
 /* Input box */
@@ -91,7 +93,7 @@ st.markdown("""
 # ==========================================
 
 st.markdown(
-    '<div class="main-title">Nissan Manufacturing AI Agent- Enter VIN Number for more details</div>',
+    '<div class="main-title">Nissan Manufacturing AI Agent- Enter VIN-ID for more details</div>',
     unsafe_allow_html=True
 )
 
@@ -166,30 +168,40 @@ if user_input:
         unsafe_allow_html=True
     )
 
-    # Generate response
-    with st.spinner("Thinking..."):
+    # Pre-render an empty slot for the real-time stream text
+    placeholder = st.empty()
+    full_response = ""
 
-        try:
+    try:
+        # Loop over tokens as they return from langchain
+        for chunk in get_agent_response_stream(user_input):
+            full_response += chunk
+            
+            # Re-render the HTML template with the growing answer
+            placeholder.markdown(
+                f"""
+                <div class="assistant-message">
+                    <b>Assistant:</b><br>
+                    {full_response}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+            
+    except Exception as e:
+        full_response = f"Error: {str(e)}"
+        placeholder.markdown(
+            f"""
+            <div class="assistant-message">
+                <b>Assistant:</b><br>
+                {full_response}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-            response = get_agent_response(user_input)
-
-        except Exception as e:
-
-            response = f"Error: {str(e)}"
-
-    # Save assistant response
+    # Save completed assistant response to history
     st.session_state.messages.append({
         "role": "assistant",
-        "content": response
+        "content": full_response
     })
-
-    # Display assistant response
-    st.markdown(
-        f"""
-        <div class="assistant-message">
-            <b>Assistant:</b><br>
-            {response}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
