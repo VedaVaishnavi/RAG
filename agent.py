@@ -22,12 +22,12 @@ from langchain_core.output_parsers import StrOutputParser
 load_dotenv()
 
 # AWS and Pinecone Configurations
-AWS_REGION = st.secrets("AWS_REGION")
-BEDROCK_MODEL_ID = st.secrets("BEDROCK_LLM_MODEL_ID")
-EMBEDDING_MODEL_ID = st.secrets("BEDROCK_EMBEDDING_MODEL_ID")
-PINECONE_API_KEY = st.secrets("PINECONE_API_KEY")
-PINECONE_INDEX_NAME = st.secrets("PINECONE_INDEX")
-OPENAI_API_KEY = st.secrets("OPENAI_API_KEY")
+AWS_REGION = st.secrets["AWS_REGION"]
+BEDROCK_MODEL_ID = st.secrets["BEDROCK_LLM_MODEL_ID"]
+EMBEDDING_MODEL_ID = st.secrets["BEDROCK_EMBEDDING_MODEL_ID"]
+PINECONE_API_KEY = st.secrets["PINECONE_API_KEY"]
+PINECONE_INDEX_NAME = st.secrets["PINECONE_INDEX"]
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 
 # Initialize LLM & Embeddings
 llm = ChatOpenAI(
